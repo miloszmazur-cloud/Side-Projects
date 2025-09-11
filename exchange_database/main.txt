@@ -1,0 +1,66 @@
+Sub addToDB()
+    Dim wsSource As Worksheet
+    Dim wsDest As Worksheet
+    Dim sourceCell As Range
+    Dim destCell As Range
+    Dim lastRow As Long
+    
+    Set wsSource = ThisWorkbook.Sheets("current")
+    Set wsDest = ThisWorkbook.Sheets("dataBase")
+    lastRow = wsDest.Cells(wsDest.Rows.count, "A").End(xlUp).Row
+    Set sourceCell = wsSource.Range("A2")
+
+    While Not IsEmpty(sourceCell)
+        Set destCell = wsDest.Cells(lastRow + 1, "A")
+        destCell.Value = sourceCell.Value
+        destCell.Offset(0, 1).Value = sourceCell.Offset(0, 2).Value
+        Set sourceCell = sourceCell.Offset(1, 0)
+        lastRow = lastRow + 1
+    Wend
+    
+End Sub
+
+
+Sub clear()
+    Dim ws As Worksheet
+    Dim rng As Range
+
+    Set ws = ThisWorkbook.Sheets("current")
+    Set rng = ws.Range("A2:C" & ws.Cells(ws.Rows.count, "A").End(xlUp).Row)
+    rng.ClearContents
+    
+    ws.Range("A1").Value = "Name"
+    ws.Range("B1").Value = "Times"
+    ws.Range("C1").Value = "Destination"
+    
+End Sub
+
+
+Sub check()
+    Dim ws1 As Worksheet
+    Dim ws2 As Worksheet
+    Dim cell As Range
+    Dim searchCell As Range
+    Dim name As String
+    Dim count As Integer
+
+    Set ws1 = ThisWorkbook.Sheets("current")
+    Set ws2 = ThisWorkbook.Sheets("dataBase")
+    Set cell = ws1.Range("A2")
+
+    While Not IsEmpty(cell)
+
+        name = cell.Value
+        count = 0
+        Set searchCell = ws2.Range("A1")
+        While Not IsEmpty(searchCell)
+            If searchCell.Value = name Then
+                count = count + 1
+            End If
+            Set searchCell = searchCell.Offset(1, 0)
+        Wend
+
+        cell.Offset(0, 1).Value = count
+        Set cell = cell.Offset(1, 0)
+    Wend
+End Sub
